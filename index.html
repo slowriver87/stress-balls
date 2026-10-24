@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="description" content="Stress Balls: five quick games for a better minute.">
+<meta name="description" content="Stress Balls: six quick games for a better minute.">
 <meta name="theme-color" content="#24255f">
 <title>Stress Balls</title>
 <style>
@@ -39,15 +39,31 @@ p{margin:0}
 .label{font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:700}
 
 /* Ball pile */
-.pile{position:relative; height:160px; margin-top:4px; overflow:hidden}
-.ball{position:absolute; bottom:0; border-radius:50%; cursor:pointer; border:0; padding:0; appearance:none;
-  box-shadow:inset -10px -14px 0 rgba(0,0,0,.18), inset 8px 10px 0 rgba(255,255,255,.28), 0 10px 18px rgba(0,0,0,.3);
-  transform-origin:50% 100%; animation:idle 3.2s ease-in-out infinite}
-.ball::after{content:""; position:absolute; left:22%; top:16%; width:24%; height:16%; border-radius:50%; background:rgba(255,255,255,.55)}
-.ball.squish{animation:squish .5s cubic-bezier(.3,1.6,.5,1)}
-@keyframes idle{50%{transform:translateY(-4px)}}
-@keyframes squish{0%{transform:scale(1,1)}25%{transform:scale(1.35,.6)}55%{transform:scale(.85,1.2) translateY(-18px)}80%{transform:scale(1.06,.94)}100%{transform:scale(1,1)}}
-.pile-hint{font-size:.85rem; color:var(--muted); text-align:center}
+/* A pile of foam stress balls with faces, sitting on a desk. Press and hold to squeeze; let go and they boing back. */
+.pile{position:relative; height:200px; margin-top:4px; overflow:hidden; border-radius:22px;
+  background:
+    radial-gradient(circle at 12% 20%, rgba(255,210,90,.5) 0 3px, transparent 4px),
+    radial-gradient(circle at 84% 14%, rgba(244,143,177,.6) 0 3px, transparent 4px),
+    radial-gradient(circle at 60% 8%, rgba(76,155,232,.6) 0 2.5px, transparent 3.5px),
+    radial-gradient(circle at 34% 30%, rgba(63,182,168,.6) 0 2.5px, transparent 3.5px),
+    linear-gradient(transparent 0 80%, #6b4fa3 80% 83%, #4a3477 83% 100%)}
+.ball{position:absolute; padding:0; border:0; appearance:none; background:none; cursor:pointer; touch-action:none; -webkit-user-select:none; user-select:none}
+.foam,.orb .foam{position:absolute; inset:0; border-radius:50% 50% 46% 46% / 56% 56% 44% 44%; overflow:hidden; transform-origin:50% 100%;
+  background:
+    radial-gradient(circle at 30% 24%, rgba(255,255,255,.38), transparent 44%),
+    radial-gradient(circle at 72% 88%, rgba(0,0,0,.24), transparent 58%),
+    var(--c)}
+.foam::before{content:""; position:absolute; inset:0; pointer-events:none;
+  background-image:radial-gradient(rgba(255,255,255,.22) 1px, transparent 1.7px), radial-gradient(rgba(0,0,0,.14) 1px, transparent 1.7px);
+  background-size:9px 9px, 13px 13px; background-position:0 0, 4px 6px}
+.foam svg{position:absolute; left:8%; right:8%; top:10%; bottom:4%; width:84%; height:86%}
+.ball .foam{transform:scale(1.05,.95); transition:transform .1s ease-out}
+.ball .shadow{position:absolute; left:6%; right:6%; bottom:-9px; height:14px; border-radius:50%; background:rgba(0,0,0,.38); filter:blur(2px); transition:transform .1s}
+.ball.down .foam{transform:scale(1.38,.6)}
+.ball.down .shadow{transform:scaleX(1.35)}
+.ball.boing .foam{animation:boing .6s cubic-bezier(.3,1.7,.5,1)}
+@keyframes boing{0%{transform:scale(1.38,.6)}35%{transform:scale(.86,1.18) translateY(-14px)}65%{transform:scale(1.09,.91)}100%{transform:scale(1.05,.95)}}
+.pile-hint{font-size:.85rem; color:var(--muted); text-align:center; font-variant-numeric:tabular-nums}
 
 /* Mood picker */
 .mood{display:flex; flex-direction:column; gap:10px}
@@ -63,7 +79,7 @@ p{margin:0}
   border-radius:22px; padding:16px; transition:border-color .2s, transform .2s, opacity .2s}
 .game.hi{border-color:var(--sun); transform:scale(1.015)}
 .game.dim{opacity:.45}
-.game .orb{width:64px; height:64px; border-radius:50%; box-shadow:inset -8px -10px 0 rgba(0,0,0,.2), inset 6px 8px 0 rgba(255,255,255,.3)}
+.game .orb{position:relative; width:64px; height:60px; margin-top:4px}
 .game .body{display:flex; flex-direction:column; gap:8px; min-width:0}
 .game .top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap}
 .chips{display:flex; gap:6px; flex-wrap:wrap}
@@ -81,20 +97,20 @@ p{margin:0}
 /* Best for you */
 .best{background:rgba(255,210,90,.1); border:2px dashed rgba(255,210,90,.5); border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:6px}
 .foot{font-size:.82rem; color:var(--muted); display:flex; flex-direction:column; gap:6px}
-@media (prefers-reduced-motion: reduce){ .ball{animation:none} .ball.squish{animation-duration:.01s} }
+@media (prefers-reduced-motion: reduce){ .ball.boing .foam{animation-duration:.01s} }
 </style>
 </head>
 <body>
 <div class="app">
   <header style="display:flex; flex-direction:column; gap:10px">
-    <div class="label">Five quick games for a better minute</div>
+    <div class="label">Six quick games for a better minute</div>
     <h1>Stress Balls</h1>
     <p>Some are calm and based on research. Some are just silly. All of them ask how you feel before and after, so you can see which ones actually help you.</p>
   </header>
 
   <div>
     <div class="pile" id="pile" aria-label="Squishy stress balls"></div>
-    <p class="pile-hint">Go ahead. Squeeze one.</p>
+    <p class="pile-hint" id="pileHint">Go ahead. Press and hold one to squeeze it.</p>
   </div>
 
   <section class="mood">
@@ -121,43 +137,94 @@ p{margin:0}
 (function(){
 const BASE = 'https://slowriver87.github.io/';
 const GAMES = [
-  {id:'still-water',  key:'stillwater-hist',  name:'Still Water',          color:'#3fb6a8', type:'calm',  sci:true,
+  {id:'still-water', face:'calm',  key:'stillwater-hist',  name:'Still Water',          color:'#3fb6a8', type:'calm',  sci:true,
    blurb:'Tap the amber circles, skip the grey rings. Gently pulls a wandering mind back.', len:'About 1 to 2 min'},
-  {id:'tide-breath',  key:'tidebreath-hist',  name:'Tide Breath',          color:'#4c9be8', type:'calm',  sci:true,
+  {id:'tide-breath', face:'sleepy',  key:'tidebreath-hist',  name:'Tide Breath',          color:'#4c9be8', type:'calm',  sci:true,
    blurb:'Breathe with the tide. Two breaths in, one long breath out.', len:'2, 3 or 5 min'},
-  {id:'pigeon-panic', key:'pigeonpanic-hist', name:'Pigeon Panic',         color:'#ef5a4c', type:'silly', sci:false,
+  {id:'pigeon-panic', face:'shock', key:'pigeonpanic-hist', name:'Pigeon Panic',         color:'#ef5a4c', type:'silly', sci:false,
    blurb:'Shoo pigeons off your fries. Leave the friendly seagulls alone. Or else.', len:'60 sec'},
-  {id:'grumpy-cat-cafe', key:'grumpycat-hist', name:'Grumpy Cat Café',     color:'#f48fb1', type:'silly', sci:false,
+  {id:'grumpy-cat-cafe', face:'grumpy', key:'grumpycat-hist', name:'Grumpy Cat Café',     color:'#f48fb1', type:'silly', sci:false,
    blurb:'Make ridiculous drinks for picky cats. Get it wrong and they swat it off the counter.', len:'90 sec'},
-  {id:'goat-yoga',    key:'goatyoga-hist',    name:'Goat Yoga Instructor', color:'#b39ddb', type:'silly', sci:false,
-   blurb:'Teach yoga to goats who roast you. Hold the right pose or get headbutted.', len:'90 sec'}
+  {id:'goat-yoga', face:'silly',    key:'goatyoga-hist',    name:'Goat Yoga Instructor', color:'#b39ddb', type:'silly', sci:false,
+   blurb:'Teach yoga to goats who roast you. Hold the right pose or get headbutted.', len:'90 sec'},
+  {id:'raccoon-math-heist', face:'mask', key:'raccoonheist-hist', name:'Raccoon Math Heist', color:'#ff9f43', type:'silly', sci:true,
+   blurb:'Sassy raccoons steal numbers. Win them back with quick math and memory puzzles that keep your brain too busy to worry.', len:'90 sec'}
 ];
 const $ = id => document.getElementById(id);
 let audio = null;
 
-/* ---------- squishy balls ---------- */
+/* ---------- squishy stress balls ---------- */
+const INK = '#1d1c48';
+function dot(cx, cy, r){ return '<circle cx="'+cx+'" cy="'+cy+'" r="'+(r||5.5)+'" fill="'+INK+'"/>'; }
+function faceSVG(t, squeezed){
+  const s = 'stroke="'+INK+'" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" fill="none"';
+  let x = '', e = '', m = '';
+  if(squeezed){
+    if(t==='mask') x = '<path d="M12 40 q38 -14 76 0 q-4 16 -18 14 q-10 -2 -20 -8 q-10 6 -20 8 q-14 2 -18 -14 z" fill="#2c2a33"/>';
+    e = '<path d="M28 36 l13 9 l-13 9 M72 36 l-13 9 l13 9" '+(t==='mask' ? s.replace(INK, '#fff') : s)+'/>';
+    m = '<path d="M32 70 q4.5 -7 9 0 q4.5 7 9 0 q4.5 -7 9 0 q4.5 7 9 0" '+s+'/>';
+    x += '<ellipse cx="20" cy="62" rx="8" ry="5" fill="#ff7aa8" opacity=".6"/><ellipse cx="80" cy="62" rx="8" ry="5" fill="#ff7aa8" opacity=".6"/>';
+  } else switch(t){
+    case 'happy':  e = dot(36,44)+dot(64,44); m = '<path d="M32 60 Q50 78 68 60" '+s+'/>'; break;
+    case 'calm':   e = '<path d="M28 46 q8 -8 16 0 M56 46 q8 -8 16 0" '+s+'/>'; m = '<path d="M40 64 Q50 72 60 64" '+s+'/>'; break;
+    case 'sleepy': e = '<path d="M28 46 h16 M56 46 h16" '+s+'/>'; m = '<ellipse cx="50" cy="66" rx="5" ry="6" fill="'+INK+'"/>';
+                   x = '<text x="74" y="26" font-size="20" font-weight="700" fill="'+INK+'" font-family="sans-serif">z</text>'; break;
+    case 'shock':  e = '<circle cx="35" cy="42" r="11" fill="#fff" stroke="'+INK+'" stroke-width="4"/><circle cx="65" cy="42" r="11" fill="#fff" stroke="'+INK+'" stroke-width="4"/>'+dot(35,43,4.5)+dot(65,43,4.5);
+                   m = '<ellipse cx="50" cy="70" rx="8" ry="10" fill="'+INK+'"/>'; break;
+    case 'grumpy': e = '<path d="M25 33 L44 40 M75 33 L56 40" '+s+'/>'+dot(36,49)+dot(64,49); m = '<path d="M36 72 Q50 61 64 72" '+s+'/>'; break;
+    case 'silly':  e = dot(36,44)+'<path d="M56 45 q8 -7 16 0" '+s+'/>'; m = '<path d="M32 60 Q50 74 68 60" '+s+'/><path d="M45 66 q5 16 12 0" fill="#ff7aa8" stroke="'+INK+'" stroke-width="4" stroke-linejoin="round"/>'; break;
+    case 'mask':   x = '<path d="M12 40 q38 -14 76 0 q-4 16 -18 14 q-10 -2 -20 -8 q-10 6 -20 8 q-14 2 -18 -14 z" fill="#2c2a33"/>';
+                   e = '<circle cx="35" cy="44" r="6.5" fill="#fff"/><circle cx="65" cy="44" r="6.5" fill="#fff"/>'+dot(36,45,3.2)+dot(66,45,3.2);
+                   m = '<path d="M38 66 Q52 75 65 62" '+s+'/>'; break;
+  }
+  return '<svg viewBox="0 0 100 100" aria-hidden="true">'+x+e+m+'</svg>';
+}
+// x is a 0 to 1 position across the pile; bottom-row balls rest on the desk, top-row balls sit on the others
 const BALLS = [
-  {c:'#3fb6a8', s:96, x:2}, {c:'#ef5a4c', s:120, x:20}, {c:'#ffd25a', s:84, x:44}, {c:'#4c9be8', s:110, x:58}, {c:'#f48fb1', s:78, x:79}, {c:'#b39ddb', s:62, x:36}
+  {c:'#3fb6a8', s:96,  x:0,    b:34,  f:'calm'},
+  {c:'#ef5a4c', s:116, x:.2,   b:34,  f:'shock'},
+  {c:'#ffd25a', s:92,  x:.45,  b:34,  f:'happy'},
+  {c:'#4c9be8', s:104, x:.68,  b:34,  f:'sleepy'},
+  {c:'#f48fb1', s:86,  x:1,    b:34,  f:'grumpy'},
+  {c:'#ff9f43', s:70,  x:.3,   b:118, f:'mask'},
+  {c:'#b39ddb', s:66,  x:.82,  b:112, f:'silly'}
 ];
 const pile = $('pile');
-BALLS.forEach((b,i)=>{
-  const el = document.createElement('button'); el.type = 'button'; el.className = 'ball'; el.setAttribute('aria-label','Squeeze');
-  el.style.width = el.style.height = b.s+'px'; el.style.left = 'calc('+b.x+'% - '+(b.x>60 ? b.s*0.4 : 0)+'px)';
-  el.style.background = b.c; el.style.animationDelay = (i*.4)+'s';
-  if(b.s < 70) el.style.bottom = '84px';
-  el.addEventListener('pointerdown', e=>{ e.preventDefault(); el.classList.remove('squish'); void el.offsetWidth; el.classList.add('squish'); boop(b.s); });
-  el.addEventListener('animationend', e=>{ if(e.animationName==='squish') el.classList.remove('squish'); });
+let squeezes = 0;
+BALLS.forEach((b)=>{
+  const el = document.createElement('button'); el.type = 'button'; el.className = 'ball'; el.setAttribute('aria-label','Squeeze the stress ball');
+  el.style.width = b.s+'px'; el.style.height = Math.round(b.s*.92)+'px';
+  el.style.left = 'calc((100% - '+b.s+'px) * '+b.x+')'; el.style.bottom = b.b+'px';
+  if(b.b > 60) el.style.zIndex = 2;
+  el.innerHTML = '<span class="shadow"></span><span class="foam" style="--c:'+b.c+'">'+faceSVG(b.f, false)+'</span>';
+  const foam = el.querySelector('.foam');
+  const press = e=>{
+    e.preventDefault(); try{ el.setPointerCapture(e.pointerId); }catch(_){}
+    el.classList.remove('boing'); el.classList.add('down');
+    foam.innerHTML = faceSVG(b.f, true); squeak(b.s, true);
+    squeezes++; $('pileHint').textContent = squeezes===1 ? 'Squeezed once. Feels good, right?' : 'Squeezed '+squeezes+' times.';
+  };
+  const letGo = ()=>{
+    if(!el.classList.contains('down')) return;
+    el.classList.remove('down'); void el.offsetWidth; el.classList.add('boing');
+    foam.innerHTML = faceSVG(b.f, false); squeak(b.s, false);
+  };
+  el.addEventListener('pointerdown', press);
+  ['pointerup','pointercancel','lostpointercapture'].forEach(ev=>el.addEventListener(ev, letGo));
+  el.addEventListener('animationend', ()=>el.classList.remove('boing'));
+  el.addEventListener('contextmenu', e=>e.preventDefault());
   pile.appendChild(el);
 });
-function boop(size){
+function squeak(size, down){
   try{
     audio = audio || new (window.AudioContext||window.webkitAudioContext)();
     if(audio.state==='suspended') audio.resume();
     const t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
-    const f = 900 - size*4;
-    o.type = 'sine'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f*0.45, t+0.18);
-    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+0.22);
-    o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t+0.25);
+    const f = (down ? 520 : 760) - size*2;
+    o.type = 'triangle';
+    o.frequency.setValueAtTime(down ? f*1.4 : f*0.7, t); o.frequency.exponentialRampToValueAtTime(down ? f*0.6 : f*1.3, t+0.16);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.09, t+0.015); g.gain.exponentialRampToValueAtTime(0.0001, t+0.2);
+    o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t+0.22);
   }catch(e){}
 }
 
@@ -185,7 +252,7 @@ function render(){
     const s = summary(g); sums[g.id] = s;
     const card = document.createElement('article'); card.className = 'game'; card.id = 'card-'+g.id;
     card.innerHTML =
-      '<div class="orb" style="background:'+g.color+'"></div>'+
+      '<div class="orb"><span class="foam" style="--c:'+g.color+'">'+faceSVG(g.face, false)+'</span></div>'+
       '<div class="body">'+
         '<div class="top"><h2>'+g.name+'</h2><span class="muted" style="font-size:.85rem">'+g.len+'</span></div>'+
         '<div class="chips">'+(g.type==='calm' ? '<span class="chip calm">Calm</span>' : '<span class="chip silly">Silly</span>')+
