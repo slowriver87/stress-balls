@@ -1,0 +1,236 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="description" content="Stress Balls: five quick games for a better minute.">
+<meta name="theme-color" content="#24255f">
+<title>Stress Balls</title>
+<style>
+*,*::before,*::after{box-sizing:border-box}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Rubik+Bubbles&family=Baloo+2:wght@600;800&family=Atkinson+Hyperlegible:wght@400;700&display=swap">
+<style>
+/* Layout: one column; squishable ball pile as the hero, mood picker, then one card per game. Single deep-indigo look by choice. */
+:root{
+  --night:#24255f; --night-2:#30327a; --ink:#f4f2ff; --muted:#b9b6e6; --line:rgba(244,242,255,.16);
+  --teal:#3fb6a8; --red:#ef5a4c; --blue:#4c9be8; --pink:#f48fb1; --lav:#b39ddb; --sun:#ffd25a;
+  --title:"Rubik Bubbles", "Baloo 2", "Arial Rounded MT Bold", sans-serif;
+  --display:"Baloo 2", "Arial Rounded MT Bold", "Trebuchet MS", sans-serif;
+  --body:"Atkinson Hyperlegible", system-ui, -apple-system, "Segoe UI", sans-serif;
+  color-scheme:dark;
+}
+html,body{min-height:100%}
+body{background:radial-gradient(120% 70% at 50% 0%, var(--night-2), var(--night) 65%) fixed, var(--night); color:var(--ink);
+  font-family:var(--body); font-size:16px; line-height:1.45;
+  padding-left:max(16px, env(safe-area-inset-left,0px)); padding-right:max(16px, env(safe-area-inset-right,0px));
+  -webkit-tap-highlight-color:transparent}
+.app{max-width:560px; margin:0 auto; padding-block:20px 40px; display:flex; flex-direction:column; gap:22px}
+h1{font-family:var(--title); font-weight:400; font-size:clamp(2.9rem, 13vw, 4.2rem); line-height:.95; margin:0; color:var(--sun);
+  text-shadow:0 4px 0 #c9871e, 0 8px 18px rgba(0,0,0,.35); letter-spacing:.01em}
+h2{font-family:var(--display); font-weight:800; font-size:1.45rem; line-height:1.1; margin:0}
+p{margin:0}
+.muted{color:var(--muted)}
+.label{font-size:.72rem; letter-spacing:.12em; text-transform:uppercase; color:var(--muted); font-weight:700}
+
+/* Ball pile */
+.pile{position:relative; height:160px; margin-top:4px; overflow:hidden}
+.ball{position:absolute; bottom:0; border-radius:50%; cursor:pointer; border:0; padding:0; appearance:none;
+  box-shadow:inset -10px -14px 0 rgba(0,0,0,.18), inset 8px 10px 0 rgba(255,255,255,.28), 0 10px 18px rgba(0,0,0,.3);
+  transform-origin:50% 100%; animation:idle 3.2s ease-in-out infinite}
+.ball::after{content:""; position:absolute; left:22%; top:16%; width:24%; height:16%; border-radius:50%; background:rgba(255,255,255,.55)}
+.ball.squish{animation:squish .5s cubic-bezier(.3,1.6,.5,1)}
+@keyframes idle{50%{transform:translateY(-4px)}}
+@keyframes squish{0%{transform:scale(1,1)}25%{transform:scale(1.35,.6)}55%{transform:scale(.85,1.2) translateY(-18px)}80%{transform:scale(1.06,.94)}100%{transform:scale(1,1)}}
+.pile-hint{font-size:.85rem; color:var(--muted); text-align:center}
+
+/* Mood picker */
+.mood{display:flex; flex-direction:column; gap:10px}
+.mood-row{display:grid; grid-template-columns:repeat(3, minmax(0,1fr)); gap:8px}
+.mood button{appearance:none; border:2px solid var(--line); background:rgba(255,255,255,.06); color:var(--ink); border-radius:16px; padding:10px 6px;
+  font:inherit; font-weight:700; font-size:.9rem; line-height:1.2; cursor:pointer}
+.mood button[aria-pressed="true"]{border-color:var(--sun); background:rgba(255,210,90,.16)}
+.pickmsg{min-height:1.4em; font-family:var(--display); font-weight:600; font-size:1.05rem}
+
+/* Game cards */
+.games{display:flex; flex-direction:column; gap:14px}
+.game{display:grid; grid-template-columns:64px 1fr; gap:14px; align-items:start; background:rgba(255,255,255,.06); border:2px solid var(--line);
+  border-radius:22px; padding:16px; transition:border-color .2s, transform .2s, opacity .2s}
+.game.hi{border-color:var(--sun); transform:scale(1.015)}
+.game.dim{opacity:.45}
+.game .orb{width:64px; height:64px; border-radius:50%; box-shadow:inset -8px -10px 0 rgba(0,0,0,.2), inset 6px 8px 0 rgba(255,255,255,.3)}
+.game .body{display:flex; flex-direction:column; gap:8px; min-width:0}
+.game .top{display:flex; justify-content:space-between; align-items:baseline; gap:8px; flex-wrap:wrap}
+.chips{display:flex; gap:6px; flex-wrap:wrap}
+.chip{font-size:.72rem; font-weight:700; padding:2px 9px; border-radius:999px; border:1.5px solid var(--line); color:var(--muted)}
+.chip.calm{border-color:rgba(63,182,168,.6); color:#8fe0d5}
+.chip.silly{border-color:rgba(255,210,90,.6); color:var(--sun)}
+.chip.sci{border-color:rgba(179,157,219,.6); color:#d6c8f3}
+.stats{display:flex; gap:14px; flex-wrap:wrap; font-size:.85rem; color:var(--muted); font-variant-numeric:tabular-nums}
+.stats b{color:var(--ink)}
+.play{align-self:flex-start; display:inline-flex; align-items:center; gap:6px; text-decoration:none; font-family:var(--display); font-weight:800; font-size:1.1rem;
+  color:#1d1c48; background:var(--sun); border-radius:999px; padding:8px 20px; box-shadow:0 4px 0 #c9871e}
+.play:active{transform:translateY(3px); box-shadow:0 1px 0 #c9871e}
+:focus-visible{outline:3px solid var(--sun); outline-offset:3px}
+
+/* Best for you */
+.best{background:rgba(255,210,90,.1); border:2px dashed rgba(255,210,90,.5); border-radius:20px; padding:14px 16px; display:flex; flex-direction:column; gap:6px}
+.foot{font-size:.82rem; color:var(--muted); display:flex; flex-direction:column; gap:6px}
+@media (prefers-reduced-motion: reduce){ .ball{animation:none} .ball.squish{animation-duration:.01s} }
+</style>
+</head>
+<body>
+<div class="app">
+  <header style="display:flex; flex-direction:column; gap:10px">
+    <div class="label">Five quick games for a better minute</div>
+    <h1>Stress Balls</h1>
+    <p>Some are calm and based on research. Some are just silly. All of them ask how you feel before and after, so you can see which ones actually help you.</p>
+  </header>
+
+  <div>
+    <div class="pile" id="pile" aria-label="Squishy stress balls"></div>
+    <p class="pile-hint">Go ahead. Squeeze one.</p>
+  </div>
+
+  <section class="mood">
+    <h2>What do you need right now?</h2>
+    <div class="mood-row" id="moodRow">
+      <button type="button" data-need="calm" aria-pressed="false">Calm down</button>
+      <button type="button" data-need="silly" aria-pressed="false">A laugh</button>
+      <button type="button" data-need="any" aria-pressed="false">Surprise me</button>
+    </div>
+    <p class="pickmsg" id="pickMsg"></p>
+  </section>
+
+  <div class="best" id="best" hidden></div>
+
+  <section class="games" id="games"></section>
+
+  <div class="foot">
+    <p>Scores and feelings are saved on this phone only, up to the last 5 plays of each game. Clearing your browser history erases them.</p>
+    <p>These games are for a quick break. They are not a treatment. If stress is weighing on you most days, talking to a doctor or counselor can help.</p>
+  </div>
+</div>
+
+<script>
+(function(){
+const BASE = 'https://slowriver87.github.io/';
+const GAMES = [
+  {id:'still-water',  key:'stillwater-hist',  name:'Still Water',          color:'#3fb6a8', type:'calm',  sci:true,
+   blurb:'Tap the amber circles, skip the grey rings. Gently pulls a wandering mind back.', len:'About 1 to 2 min'},
+  {id:'tide-breath',  key:'tidebreath-hist',  name:'Tide Breath',          color:'#4c9be8', type:'calm',  sci:true,
+   blurb:'Breathe with the tide. Two breaths in, one long breath out.', len:'2, 3 or 5 min'},
+  {id:'pigeon-panic', key:'pigeonpanic-hist', name:'Pigeon Panic',         color:'#ef5a4c', type:'silly', sci:false,
+   blurb:'Shoo pigeons off your fries. Leave the friendly seagulls alone. Or else.', len:'60 sec'},
+  {id:'grumpy-cat-cafe', key:'grumpycat-hist', name:'Grumpy Cat Café',     color:'#f48fb1', type:'silly', sci:false,
+   blurb:'Make ridiculous drinks for picky cats. Get it wrong and they swat it off the counter.', len:'90 sec'},
+  {id:'goat-yoga',    key:'goatyoga-hist',    name:'Goat Yoga Instructor', color:'#b39ddb', type:'silly', sci:false,
+   blurb:'Teach yoga to goats who roast you. Hold the right pose or get headbutted.', len:'90 sec'}
+];
+const $ = id => document.getElementById(id);
+let audio = null;
+
+/* ---------- squishy balls ---------- */
+const BALLS = [
+  {c:'#3fb6a8', s:96, x:2}, {c:'#ef5a4c', s:120, x:20}, {c:'#ffd25a', s:84, x:44}, {c:'#4c9be8', s:110, x:58}, {c:'#f48fb1', s:78, x:79}, {c:'#b39ddb', s:62, x:36}
+];
+const pile = $('pile');
+BALLS.forEach((b,i)=>{
+  const el = document.createElement('button'); el.type = 'button'; el.className = 'ball'; el.setAttribute('aria-label','Squeeze');
+  el.style.width = el.style.height = b.s+'px'; el.style.left = 'calc('+b.x+'% - '+(b.x>60 ? b.s*0.4 : 0)+'px)';
+  el.style.background = b.c; el.style.animationDelay = (i*.4)+'s';
+  if(b.s < 70) el.style.bottom = '84px';
+  el.addEventListener('pointerdown', e=>{ e.preventDefault(); el.classList.remove('squish'); void el.offsetWidth; el.classList.add('squish'); boop(b.s); });
+  el.addEventListener('animationend', e=>{ if(e.animationName==='squish') el.classList.remove('squish'); });
+  pile.appendChild(el);
+});
+function boop(size){
+  try{
+    audio = audio || new (window.AudioContext||window.webkitAudioContext)();
+    if(audio.state==='suspended') audio.resume();
+    const t = audio.currentTime, o = audio.createOscillator(), g = audio.createGain();
+    const f = 900 - size*4;
+    o.type = 'sine'; o.frequency.setValueAtTime(f, t); o.frequency.exponentialRampToValueAtTime(f*0.45, t+0.18);
+    g.gain.setValueAtTime(0.0001, t); g.gain.exponentialRampToValueAtTime(0.12, t+0.01); g.gain.exponentialRampToValueAtTime(0.0001, t+0.22);
+    o.connect(g); g.connect(audio.destination); o.start(t); o.stop(t+0.25);
+  }catch(e){}
+}
+
+/* ---------- history (shared across the games on this site) ---------- */
+function hist(key){ try{ const h = JSON.parse(localStorage.getItem(key)||'[]'); return Array.isArray(h) ? h : []; }catch(e){ return []; } }
+function summary(g){
+  const h = hist(g.key);
+  const withBoth = h.filter(x => x && x.pre && x.post);
+  const avg = withBoth.length ? withBoth.reduce((s,x)=>s + (x.post - x.pre), 0) / withBoth.length : null;
+  return {plays:h.length, last: h[0] ? h[0].d : null, avg, n:withBoth.length};
+}
+function changeText(avg, n){
+  if(avg === null) return 'Answer the before question to track this';
+  const a = Math.round(avg*10)/10;
+  if(a > 0) return '<b>+'+a+'</b> calmer on average ('+n+' play'+(n>1?'s':'')+')';
+  if(a < 0) return '<b>'+a+'</b> on average ('+n+' play'+(n>1?'s':'')+')';
+  return '<b>No change</b> on average ('+n+' play'+(n>1?'s':'')+')';
+}
+
+/* ---------- cards ---------- */
+function render(){
+  const box = $('games'); box.innerHTML = '';
+  const sums = {};
+  GAMES.forEach(g=>{
+    const s = summary(g); sums[g.id] = s;
+    const card = document.createElement('article'); card.className = 'game'; card.id = 'card-'+g.id;
+    card.innerHTML =
+      '<div class="orb" style="background:'+g.color+'"></div>'+
+      '<div class="body">'+
+        '<div class="top"><h2>'+g.name+'</h2><span class="muted" style="font-size:.85rem">'+g.len+'</span></div>'+
+        '<div class="chips">'+(g.type==='calm' ? '<span class="chip calm">Calm</span>' : '<span class="chip silly">Silly</span>')+
+          (g.sci ? '<span class="chip sci">Based on research</span>' : '')+'</div>'+
+        '<p>'+g.blurb+'</p>'+
+        '<div class="stats">'+(s.plays ? '<span>Last played <b>'+s.last+'</b></span><span>'+changeText(s.avg, s.n)+'</span>' : '<span>Not played on this phone yet</span>')+'</div>'+
+        '<a class="play" href="'+BASE+g.id+'/">Play</a>'+
+      '</div>';
+    box.appendChild(card);
+  });
+  // Which one helps most (needs at least 2 before-and-after plays)
+  const ranked = GAMES.map(g=>({g, s:sums[g.id]})).filter(x=>x.s.n >= 2 && x.s.avg !== null).sort((a,b)=>b.s.avg - a.s.avg);
+  const best = $('best');
+  if(ranked.length && ranked[0].s.avg > 0){
+    const r = ranked[0], a = Math.round(r.s.avg*10)/10;
+    best.hidden = false;
+    best.innerHTML = '<span class="label" style="color:var(--sun)">What seems to help you most</span><h2>'+r.g.name+'</h2>'+
+      '<p>You end up about <b>'+a+' step'+(a===1?'':'s')+' calmer</b> on the 1 to 5 scale, across your last '+r.s.n+' plays with before and after answers.</p>'+
+      '<p class="muted" style="font-size:.85rem">This is a small sample from your own phone. Treat it as a hint, not a verdict.</p>';
+  } else best.hidden = true;
+}
+render();
+
+/* ---------- mood picker ---------- */
+$('moodRow').addEventListener('click', e=>{
+  const b = e.target.closest('button'); if(!b) return;
+  [...$('moodRow').children].forEach(c=>c.setAttribute('aria-pressed', c===b));
+  const need = b.dataset.need;
+  const pool = need==='any' ? GAMES : GAMES.filter(g=>g.type===need);
+  const g = pool[Math.floor(Math.random()*pool.length)];
+  document.querySelectorAll('.game').forEach(c=>{
+    const gid = c.id.replace('card-','');
+    const gg = GAMES.find(x=>x.id===gid);
+    c.classList.toggle('hi', gid===g.id);
+    c.classList.toggle('dim', need!=='any' && gg.type!==need);
+  });
+  const lines = {calm:'Try '+g.name+'. Slow and steady.', silly:'Try '+g.name+'. Laughing counts as a break.', any:'Today it\'s '+g.name+'.'};
+  $('pickMsg').textContent = lines[need];
+  const card = $('card-'+g.id); if(card) card.scrollIntoView({behavior:'smooth', block:'center'});
+});
+
+// refresh stats when coming back from a game
+document.addEventListener('visibilitychange', ()=>{ if(!document.hidden) render(); });
+window.addEventListener('pageshow', render);
+})();
+</script>
+</body>
+</html>
